@@ -19,6 +19,8 @@ $(document).ready(() => {
     let removeConfirmBtn          = $('#removeConfirmBtn');
     let removeConfirmDefaultLabel = $('#removeConfirmBtn').text();
 
+    let serverListCount = $('#serverListCount');
+
     let dragging = null, currentOrder = null;
 
     let createChart = (vanillaElement, labels, data) => {
@@ -362,7 +364,7 @@ $(document).ready(() => {
 
                 serverListTable.html(serverListBody);
 
-                $('#serverListCount').html(response.result.length);
+                serverListCount.html(response.result.length);
 
                 attachServerListEvents();
 
@@ -536,8 +538,6 @@ $(document).ready(() => {
                         if (toEditId == null) {
                             serverListTable.append(newRow);
 
-                            serverListCount = $('#serverListCount');
-
                             currentCount = parseInt(serverListCount.text());
 
                             serverListCount.text(currentCount + 1);
@@ -635,6 +635,10 @@ $(document).ready(() => {
                     toRemoveElement.slideUp(() => {
                         toRemoveElement.remove();
                     });
+
+                    currentCount = parseInt(serverListCount.text());
+
+                    serverListCount.text(currentCount - 1);
 
                     break;
                 case HTTP_STATUS.DATABASE_ERROR:
