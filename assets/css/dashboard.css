@@ -95,7 +95,7 @@ body {
 #toastsContainer {
     position: absolute;
     top: 1em;
-    right: 1em;
+    right: 2em;
     z-index: 999999;
 }
 
