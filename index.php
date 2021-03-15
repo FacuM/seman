@@ -42,7 +42,6 @@ require_once 'views/header.php';
     </p>
 </div>
 
-<!-- Extra large modal -->
 <div id="serverImageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -143,6 +142,25 @@ require_once 'views/header.php';
     </div>
 </div>
 
-<canvas class="my-4" id="myChart" width="900" height="380" style="display: none;"></canvas>
+<div id="serverStatusModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4" id="myExtraLargeModalLabel">
+                    Server status
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="text-center"> # of active processes </p>
+                <canvas class="my-4 border-bottom" id="processesChart" width="900" height="380"></canvas>
+                <p class="text-center"> # of active sessions </p>
+                <canvas class="my-4 border-bottom" id="sessionsChart" width="900" height="380"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php require_once 'views/footer.php'; ?>

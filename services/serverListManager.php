@@ -276,6 +276,79 @@ if (isset($request->operation)) {
             }
 
             break;
+        case 'getServerStatus':
+            if ($database->isUsable) {
+                if (isset($request->values)) {
+                    $values = &$request->values;
+
+                    if (isset($values->id) && is_numeric($values->id)) {
+                        $output = [ 'status' => HTTP_STATUS['OK'] ];
+
+                        $statement = $database->prepare(
+                            'SELECT     *
+                             FROM       `sm_servers`
+                             WHERE      `id` = :id
+                             AND        `enabled`'
+                        );
+
+                        $statement->execute([ 'id' => $values->id ]);
+
+                        $server = $statement->fetch();
+
+                        if ($server == null) {
+                            $output == null;
+                        } else {
+                            $output = getServerStatus($values->id);
+
+                            $processes = @snmpwalk($server['ip'], 'public', SNMP_OIDS['ACTIVE_PROCESSES']);
+
+                            // If the first query failed, we might as well just assume that the next one will break too.
+                            if ($processes !== false) {
+                                $gaugeValue = getSnmpGaugeValue($processes[0]);
+
+                                $output['processes'][] = [
+                                    'label' => strftime('%Y-%m-%d %H:%M:%S'),
+                                    'data'  => $gaugeValue
+                                ];
+
+                                saveServerStatus($values->id, GAUGE_TYPE['PROCESSES'], $gaugeValue);
+
+                                $sessions = @snmpwalk($server['ip'], 'public', SNMP_OIDS['ACTIVE_SESSIONS']);
+
+                                if ($sessions !== false) {
+                                    $gaugeValue = getSnmpGaugeValue($sessions[0]);
+
+                                    saveServerStatus($values->id, GAUGE_TYPE['SESSIONS'], $gaugeValue);
+
+                                    $output['sessions'][] = [
+                                        'label' => strftime('%Y-%m-%d %H:%M:%S'),
+                                        'data'  => $gaugeValue
+                                    ];
+                                }
+                            }
+
+                            $output['hadIssues'] = false;
+
+                            if ($processes === false || $sessions === false) {
+                                $output['hadIssues'] = true;
+                            }
+                        }
+
+                        reply([
+                            'result'    => $output,
+                            'status'    => HTTP_STATUS['OK']
+                        ]);
+                    } else {
+                        reply([ 'status' => HTTP_STATUS['BAD_REQUEST'] ]);
+                    }
+                } else {
+                    reply([ 'status' => HTTP_STATUS['BAD_REQUEST'] ]);
+                }
+            } else {
+                reply([ 'status' => HTTP_STATUS['DATABASE_ERROR'] ]);
+            }
+
+            break;
         default:
             reply([ 'status' => HTTP_STATUS['BAD_REQUEST'] ]);
     }

@@ -4,6 +4,16 @@ define('SERVICE_MIME', 'application/json');
 
 define('IMAGE_UPLOAD_PATH', 'uploads/img');
 
+define('SNMP_OIDS', [
+    'ACTIVE_PROCESSES'  => '1.3.6.1.2.1.25.1.6.0',
+    'ACTIVE_SESSIONS'   => '1.3.6.1.2.1.25.1.5.0'
+]);
+
+define('GAUGE_TYPE', [
+    'PROCESSES' => 'PROCESSES',
+    'SESSIONS'  => 'SESSIONS'
+]);
+
 define('IMAGE_VALID_MIMES', [
     'image/jpg',
     'image/jpeg',

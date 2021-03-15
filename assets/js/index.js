@@ -21,9 +21,18 @@ $(document).ready(() => {
 
     let serverListCount = $('#serverListCount');
 
+    let serverStatusModal = $('#serverStatusModal');
+
     let dragging = null, currentOrder = null;
 
-    let createChart = (vanillaElement, labels, data) => {
+    let createChart = (vanillaElement, dataset) => {
+        let labels = []; let data = [];
+
+        dataset.forEach((serverStatus) => {
+            labels.push(serverStatus.label);
+            data.push(serverStatus.data);
+        });
+
         labels.unshift('No data');
         data.unshift(0);
 
@@ -125,7 +134,7 @@ $(document).ready(() => {
                 });
 
                 if (isOrderDifferent) {
-                    savingToast = createToast('savingOrderModal', 'Guardando', 'Los cambios que realizaste están siendo guardados', false, false);
+                    createToast('savingOrderModal', 'Saving', 'The changes you made are being saved.', false, false);
 
                     $.ajax({
                         type: 'POST',
@@ -151,7 +160,7 @@ $(document).ready(() => {
                         showGenericErrorToast();
                     })
                     .always(() => {
-                        removeToast(savingToast);
+                        removeToast('savingOrderModal');
                     });
                 }
 
@@ -245,7 +254,7 @@ $(document).ready(() => {
                 showGenericErrorToast();
             })
             .always(() => {
-                removeToast(serverLoadingToast);
+                removeToast('serverLoadingToast');
             });
         });
 
@@ -264,7 +273,63 @@ $(document).ready(() => {
             $('#removeServerModal').modal('show');
         });
 
+        tableRows.find('[data-query]').on('click', (event) => {
+            let target = $(event.target);
+
+            while (typeof(target.data().query) == 'undefined') {
+                target = target.parent();
+            }
+
+            createToast('serverLoadingToast', 'Processing data', 'We\'re retrieving the status of the server you selected, please wait for a while.', false, false);
+
+            let toQueryId = target.data().query;
+
+            $.ajax({
+                type: 'POST',
+                url: 'services/serverListManager.php',
+                data: JSON.stringify({
+                    operation: 'getServerStatus',
+                    values: { id: toQueryId }
+                })
+            })
+            .done((response) => {
+                console.log(response);
+        
+                switch (response.status) {
+                    case HTTP_STATUS.OK:
+                        if (response.result == null) {
+                            createToast('noSuchServer', 'No such server', 'We were unable to find the server you tried to query, please reload the page and try again.');
+                        } else {
+                            createChart($('#processesChart')[0], response.result.processes);
+                            createChart($('#sessionsChart')[0], response.result.sessions);
+
+                            serverStatusModal.modal('show');
+
+                            if (response.result.hadIssues) {
+                                createToast('queryHadIssues', 'We couldn\'t reach the server', 'The server didn\'t reply on time, so you\'re seeing historic data without live information.', false, false);
+                            }
+                        }
+
+                        break;
+                    case HTTP_STATUS.DATABASE_ERROR:
+                        createToast('crashToast', 'Something went wrong', 'An unexpected exception caused your request to fail, please try again.');
+
+                        break;
+                }
+            })
+            .fail((error) => {
+                console.error(error);
+
+                showGenericErrorToast();
+            })
+            .always(() => {
+                removeToast('serverLoadingToast');
+            });
+        });
+
         feather.replace();
+
+        $('[data-toggle="tooltip"]').tooltip();
     };
 
     let createToast = (type, title, content, allowDismiss = true, autoHide = true, delay = DEFAULT_TOAST_FADEOUT_DELAY) => {
@@ -288,9 +353,12 @@ $(document).ready(() => {
         return toast;
     };
 
-    let removeToast = (toast) => {
+    let removeToast = (toastClass) => {
         setTimeout(() => {
-            if (typeof(toast) == 'undefined') {
+            // Using replaceAll to prevent duplicated 
+            toast = $('.' + toastClass);
+
+            if (toast.length < 1) {
                 console.info('removeToast: tried to remove a non-existing toast, skipping...');
             } else {
                 toast.toast('hide');
@@ -319,10 +387,34 @@ $(document).ready(() => {
             <td> ` + server.hostname    + ` </td>
             <td> ` + server.ip          + ` </td>
             <td>
-                <button type="button" class="btn btn-primary btn-sm" data-edit="` + server.id + `">
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-query="` + server.id + `"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Query server status"
+                >
+                    <span data-feather="activity"></span>
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-edit="` + server.id + `"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Edit server"
+                >
                     <span data-feather="edit"></span>
                 </button>
-                <button type="button" class="btn btn-danger btn-sm" data-remove="` + server.id + `">
+                <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    data-remove="` + server.id + `"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Remove server"
+                >
                     <span data-feather="trash"></span>
                 </button>
             </td>
@@ -383,8 +475,6 @@ $(document).ready(() => {
             $('#serverListTable').fadeIn();
         });
     });
-
-    createChart($('#myChart')[0], ['test'], [1]);
 
     $('#addServerBtn').on('click', () => {
         serverDataModal.find('modalMode').html('Add');
@@ -653,7 +743,11 @@ $(document).ready(() => {
             showGenericErrorToast();
         })
         .always(() => {
-            removeToast(removingServerToast);
+            removeToast('removingServerToast');
         });
-    })
+    });
+
+    serverStatusModal.on('hide.bs.modal', () => {
+        removeToast('queryHadIssues');
+    });
 });
