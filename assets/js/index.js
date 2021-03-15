@@ -594,7 +594,7 @@ $(document).ready(() => {
         let toEditId = serverDataModal.data().edit;
 
         serverDataModal.find('textarea, input').each(function () {
-            if ($(this).attr('id') != 'serverImage' && toEditId == null) {
+            if ($(this).attr('id') != 'serverImage' || toEditId == null) {
                 if (!$(this).hasClass('is-valid')) {
                     $(this).addClass('is-invalid');
 
