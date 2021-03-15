@@ -28,6 +28,12 @@ $(document).ready(() => {
     let createChart = (vanillaElement, dataset) => {
         let labels = []; let data = [];
 
+        Chart.helpers.each(Chart.instances, function(instance){
+            if (instance.chart.canvas.id == vanillaElement.id) {
+                instance.destroy();
+            }
+        });
+
         dataset.forEach((serverStatus) => {
             labels.push(serverStatus.label);
             data.push(serverStatus.data);
@@ -703,7 +709,7 @@ $(document).ready(() => {
 
         let toRemoveId = removeServerModal.data().remove;
 
-        removingServerToast = createToast('removingServerToast', 'Removing server', 'We\'re removing the server you selected, please wait for a while.', false, false);
+        createToast('removingServerToast', 'Removing server', 'We\'re removing the server you selected, please wait for a while.', false, false);
 
         $.ajax({
             type: 'POST',
