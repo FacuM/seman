@@ -37,20 +37,10 @@ if (isset($request->operation)) {
                     $values = &$request->values;
 
                     if (isset($values->id) && is_numeric($values->id)) {
-                        $output = [ 'status' => HTTP_STATUS['OK'] ];
-
-                        $statement = $database->prepare(
-                            'SELECT     *
-                             FROM       `sm_servers`
-                             WHERE      `id` = :id
-                             AND        `enabled`'
-                        );
-
-                        $statement->execute([ 'id' => $values->id ]);
-
-                        $output['result'] = $statement->fetch();
-
-                        reply($output);
+                        reply([
+                            'result' => getServer($values->id),
+                            'status' => HTTP_STATUS['OK']
+                        ]);
                     } else {
                         reply([ 'status' => HTTP_STATUS['BAD_REQUEST'] ]);
                     }
@@ -228,8 +218,6 @@ if (isset($request->operation)) {
                 );
 
                 if (isset($imageFilename) && $changes > -1) {
-                    $result['image'] = $imageFilename;
-
                     $statement = $database->prepare(
                         'UPDATE `sm_servers`
                          SET    `image` = :image
@@ -241,6 +229,10 @@ if (isset($request->operation)) {
                         'id'    => $result['id']
                     ]);
                 }
+
+                $finalServer = getServer($result['id']);
+
+                $result['image'] = $finalServer['image'];
 
                 reply([
                     'result'    => $result,

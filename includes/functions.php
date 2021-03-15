@@ -6,6 +6,21 @@ function reply($data) {
     exit();
 }
 
+function getServer($serverId) {
+    global $database;
+
+    $statement = $database->prepare(
+        'SELECT     *
+         FROM       `sm_servers`
+         WHERE      `id` = :id
+         AND        `enabled`'
+    );
+
+    $statement->execute([ 'id' => $serverId ]);
+
+    return $statement->fetch();
+}
+
 function getServerStatus($serverId) {
     global $database;
 
