@@ -454,17 +454,27 @@ $(document).ready(() => {
 
         switch (response.status) {
             case HTTP_STATUS.OK:
-                serverListBody = '';
+                if (response.result.length > 0) {
+                    serverListBody = '';
 
-                response.result.forEach((server) => {
-                    serverListBody += getServerListRow(server);
-                });
+                    response.result.forEach((server) => {
+                        serverListBody += getServerListRow(server);
+                    });
 
-                serverListTable.html(serverListBody);
+                    serverListTable.html(serverListBody);
 
-                serverListCount.html(response.result.length);
+                    serverListCount.html(response.result.length);
 
-                attachServerListEvents();
+                    attachServerListEvents();
+                }
+
+                serverListTable.append(
+                    `<tr id="noServersDummy" style="display: ` + (response.result.length > 0 ? `none` : ``) + `;">
+                        <td colspan="5">
+                            This list is empty, feel free to add a server!
+                        </td>
+                     </tr>`
+                );
 
                 break;
             case HTTP_STATUS.DATABASE_ERROR:
@@ -632,11 +642,21 @@ $(document).ready(() => {
                         });
 
                         if (toEditId == null) {
-                            serverListTable.append(newRow);
+                            onDummyHidden = () => {
+                                serverListTable.append(newRow);
 
-                            currentCount = parseInt(serverListCount.text());
+                                currentCount = parseInt(serverListCount.text());
 
-                            serverListCount.text(currentCount + 1);
+                                serverListCount.text(currentCount + 1);
+
+                                attachServerListEvents();
+                            };
+
+                            if ($('#noServersDummy').is(':visible')) {
+                                $('#noServersDummy').fadeOut(onDummyHidden);
+                            } else {
+                                onDummyHidden();
+                            }
                         } else {
                             $('tr[data-id="' + toEditId + '"]').replaceWith(newRow);
                         }
@@ -728,13 +748,18 @@ $(document).ready(() => {
 
                     removeServerModal.modal('hide');
 
-                    toRemoveElement.slideUp(() => {
-                        toRemoveElement.remove();
-                    });
-
                     currentCount = parseInt(serverListCount.text());
+                    targetCount = currentCount - 1;
 
-                    serverListCount.text(currentCount - 1);
+                    serverListCount.text(targetCount);
+
+                    toRemoveElement.fadeOut(() => {
+                        toRemoveElement.remove();
+
+                        if (targetCount < 1) {
+                            $('#noServersDummy').fadeIn();
+                        }
+                    });
 
                     break;
                 case HTTP_STATUS.DATABASE_ERROR:
