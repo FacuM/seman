@@ -162,6 +162,10 @@ if (isset($request->operation)) {
                             // unique ID + _ + . + extension (image/jpg => jpg)
                             $imageFilename = uniqid() . '_' . sha1($imageBinary) . '.' . explode('/', $mime)[1];
 
+                            if (!file_exists(IMAGE_UPLOAD_PATH)) {
+                                mkdir(IMAGE_UPLOAD_PATH, 0777, true);
+                            }
+
                             file_put_contents(IMAGE_UPLOAD_PATH . '/' . $imageFilename, $imageBinary);
                         }
                     }
