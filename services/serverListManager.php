@@ -176,15 +176,17 @@ if (isset($request->operation)) {
                              ) VALUES (
                                 :description,
                                 :hostname,
-                                :ip, (
-                                    SELECT `order`
-                                    FROM (
-                                        SELECT      `order` + 1 AS `order`
-                                        FROM        `sm_servers`
-                                        ORDER BY    `order` DESC
-                                        LIMIT       1
-                                    ) AS newOrder
-                                )
+                                :ip, IFNULL(
+                                    (
+                                        SELECT `order`
+                                        FROM (
+                                            SELECT      `order` + 1 AS `order`
+                                            FROM        `sm_servers`
+                                            ORDER BY    `order` DESC
+                                            LIMIT       1
+                                        ) AS newOrder
+                                    )
+                                , 0)
                              )'
                         );
                     } else {
