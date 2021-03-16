@@ -25,7 +25,7 @@ $(document).ready(() => {
 
     let dragging = null, currentOrder = null;
 
-    let createChart = (vanillaElement, dataset) => {
+    const createChart = (vanillaElement, dataset) => {
         let labels = []; let data = [];
 
         Chart.helpers.each(Chart.instances, function(instance){
@@ -70,7 +70,7 @@ $(document).ready(() => {
         });
     };
 
-    let attachServerListEvents = () => {
+    const attachServerListEvents = () => {
         let tableRows = serverListTable.find('tr');
 
         // Track which element is being dragged
@@ -338,7 +338,7 @@ $(document).ready(() => {
         $('[data-toggle="tooltip"]').tooltip();
     };
 
-    let createToast = (type, title, content, allowDismiss = true, autoHide = true, delay = DEFAULT_TOAST_FADEOUT_DELAY) => {
+    const createToast = (type, title, content, allowDismiss = true, autoHide = true, delay = DEFAULT_TOAST_FADEOUT_DELAY) => {
         $('#toastsContainer').append(
             `<div class="toast ` + type + `" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="` + autoHide.toString() + `" data-delay="` + delay + `">
                 <div class="toast-header">
@@ -359,7 +359,7 @@ $(document).ready(() => {
         return toast;
     };
 
-    let removeToast = (toastClass) => {
+    const removeToast = (toastClass) => {
         setTimeout(() => {
             // Using replaceAll to prevent duplicated 
             toast = $('.' + toastClass);
@@ -374,15 +374,15 @@ $(document).ready(() => {
         }, DEFAULT_TOAST_FADEIN_DELAY);
     };
 
-    let showGenericErrorToast = () => (
+    const showGenericErrorToast = () => (
         createToast('genericCrashToast', 'Something went wrong', 'An unexpected error has occured and it couldn\'t be handled, please try again later.')
     );
 
-    let showDatabaseErrorToast = () => (
+    const showDatabaseErrorToast = () => (
         createToast('crashToast', 'Something went wrong', 'An unexpected exception caused your changes to get lost, please try again.')
     );
 
-    let getServerListRow = (server) => (
+    const getServerListRow = (server) => (
         `<tr draggable="true" data-id="` + server.id + `">
             <td>
                 <button
