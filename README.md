@@ -41,6 +41,6 @@ With the provided options, you should start by clicking `Add server` and followi
 Give it a try! Import the database from the **resources** folder and start playing around.
 
 ## License
-This project is just a quick real-world implementation of the a server manager, feel free to grab some examples for your own projects.
+This project is just a quick real-world implementation of a server manager, feel free to grab some examples for your own projects.
 
 Licensed under the [MIT license](LICENSE).
