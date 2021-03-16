@@ -6,7 +6,8 @@ This is Seman, a simple server manager for SNMP-based services.
 ## Dependencies
  - PHP 7.4.3 or greater (might work with older versions, **snmp** and **intl** extensions are required)
  - MariaDB 15.1 or greater (might work with older versions)
- - [Gump](https://github.com/Wixel/GUMP) (an amazing data validation tool, under the [MIT license](https://github.com/Wixel/GUMP/blob/master/LICENSE))
+ - [Gump](https://github.com/Wixel/GUMP) (an amazing server-side data validation tool, under the [MIT license](https://github.com/Wixel/GUMP/blob/master/LICENSE))
+ - [validator.js](https://github.com/validatorjs/validator.js) (a fast and reliable client-side data validation tool, under the [MIT license](https://github.com/validatorjs/validator.js/blob/master/LICENSE))
 
 ## Installing
 Getting the website up and running is a simple operation that can be done in a minute or two.
