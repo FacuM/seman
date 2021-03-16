@@ -16,7 +16,6 @@ The installation procedure has been tested on Ubuntu 20.04.2 LTS, other distribu
  - Create a database called `seman` (if you want to use another name, remember to supply it through the environment variables later), then, execute the provided SQL script (find it at `/resources`).
  - Install the optional dependencies to host and query SNMP servers yourself: `sudo apt install snmp snmp-mibs-downloader snmpd`.
  - Install the required dependencies to query and talk to SNMP servers through PHP: `sudo apt install php-intl php-snmp`.
- - Restart the server: `sudo service apache2 restart` or `sudo systemctl restart apache2`.
  - Change to the root of the project and get the dependencies by executing the following command: `composer install`.
  - Edit your virtual host file and add these values as environment variables. An example for Apache would look like this:
 
@@ -25,6 +24,8 @@ The installation procedure has been tested on Ubuntu 20.04.2 LTS, other distribu
 
    **IMPORTANT!** If you want to provide a database password, just define `MYSQL_PASSWORD` too, it'll be detected.
  - Once you're done, save the file, restart the server and you're good to go!
+ 
+   To restart the server, you can use one of the following commands: `sudo service apache2 restart` or `sudo systemctl restart apache2`.
 
 ## Features
 The following list provides information about the currently supported features:
