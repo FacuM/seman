@@ -35,7 +35,8 @@ define('HTTP_STATUS', [
     'BAD_REQUEST'       => 400,
     'FORBIDDEN'         => 403,
     'NOT_FOUND'         => 404,
-    'DATABASE_ERROR'    => -1000
+    'DATABASE_ERROR'    => -1000,
+    'DUPLICATED_ENTRY'  => -1001
 ]);
 
 ?>

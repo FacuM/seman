@@ -700,6 +700,13 @@ $(document).ready(() => {
                         });
 
                         break;
+                    case HTTP_STATUS.DUPLICATED_ENTRY:
+                        serverHostname.addClass('is-invalid');
+                        serverIP.addClass('is-invalid');
+
+                        createToast('duplicatedEntry', 'Duplicated entry', 'Either the hostname or the IP you provided are already present, please make sure they don\'t exist and try again.');
+
+                        break;
                 }
             })
             .fail((error) => {

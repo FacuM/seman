@@ -130,6 +130,30 @@ if (isset($request->operation)) {
                 $validData  = $gump->run($values);
                 $errors     = $gump->get_errors_array();
 
+                if (!isset($validData['edit']) || $validData['edit'] == null) {
+                    $statement = $database->prepare(
+                        'SELECT COUNT(*) AS `count`
+                         FROM   `sm_servers`
+                         WHERE  `enabled`
+                         AND    (
+                            `ip`        = :ip
+                            OR
+                            `hostname`  = :hostname
+                         )'
+                    );
+
+                    $statement->execute([
+                        'ip'        => $validData['ipAddress'],
+                        'hostname'  => $values['hostname']
+                    ]);
+
+                    $matches = $statement->fetch()['count'];
+
+                    if ($matches > 0) {
+                        reply([ 'status' => HTTP_STATUS['DUPLICATED_ENTRY']] );
+                    }
+                }
+
                 $isImageValid = false;
 
                 if (isset($values['image']) && !empty($values['image'])) {
