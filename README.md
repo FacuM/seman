@@ -4,7 +4,7 @@ Seman
 This is Seman, a simple server manager for SNMP-based services.
 
 ## Dependencies
- - PHP 7.4.3 or greater (might work with older versions, **snmp** and **intl** extensions are required)
+ - PHP 7.4.3 or greater (might work with older versions, **mbstring**, **bcmath**, **snmp** and **intl** extensions are required)
  - MariaDB 15.1 or greater (might work with older versions)
  - [Gump](https://github.com/Wixel/GUMP) (an amazing server-side data validation tool, under the [MIT license](https://github.com/Wixel/GUMP/blob/master/LICENSE))
  - [validator.js](https://github.com/validatorjs/validator.js) (a fast and reliable client-side data validation tool, under the [MIT license](https://github.com/validatorjs/validator.js/blob/master/LICENSE))
@@ -16,7 +16,7 @@ The installation procedure has been tested on Ubuntu 20.04.2 LTS, other distribu
 
  - Create a database called `seman` (if you want to use another name, remember to supply it through the environment variables later), then, execute the provided SQL script (find it at `/resources`).
  - Install the optional dependencies to host and query SNMP servers yourself: `sudo apt install snmp snmp-mibs-downloader snmpd`.
- - Install the required dependencies to query and talk to SNMP servers through PHP: `sudo apt install php-intl php-snmp`.
+ - Install the required dependencies to query and talk to SNMP servers through PHP: `sudo apt install php-intl php-snmp php-bcmath php-mbstring`.
  - Change to the root of the project and get the dependencies by executing the following command: `composer install`.
  - Edit your virtual host file and add these values as environment variables. An example for Apache would look like this:
 
