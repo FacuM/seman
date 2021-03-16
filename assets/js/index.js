@@ -385,7 +385,14 @@ $(document).ready(() => {
     let getServerListRow = (server) => (
         `<tr draggable="true" data-id="` + server.id + `">
             <td>
-                <button type="button" class="btn btn-success btn-sm" data-image="` + server.image + `">
+                <button
+                    type="button"
+                    class="btn btn-success btn-sm"
+                    data-image="` + server.image + `"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="View server image"
+                >
                     <span data-feather="eye"></span>
                 </button>
             </td>
