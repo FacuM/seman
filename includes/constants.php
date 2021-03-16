@@ -1,5 +1,13 @@
 <?php
 
+define('REQUIRED_ENVIRONMENT_VARIABLES', [
+	'MYSQL_HOSTNAME',
+	'MYSQL_PORT',
+	'MYSQL_USERNAME',
+	'MYSQL_DATABASE',
+	'MYSQL_ENCODING'
+]);
+
 define('SERVICE_MIME', 'application/json');
 
 define('IMAGE_UPLOAD_PATH', 'uploads/img');
