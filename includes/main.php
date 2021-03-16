@@ -19,7 +19,7 @@ foreach (REQUIRED_ENVIRONMENT_VARIABLES as $index => $requiredKey) {
 
 if (!empty($missingVariables)) {
     print
-        'Couldn\'t to complete startup: <br>
+        'Couldn\'t complete startup: <br>
          <br>
          The following required environment variables are missing: ' . $missingVariables . ' <br>
          <br>
