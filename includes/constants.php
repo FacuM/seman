@@ -34,6 +34,8 @@ define('IMAGE_REQUIRED_RESOLUTION', [
     'HEIGHT'    => 300
 ]);
 
+define('DESCRIPTION_MAX_LENGTH', 200);
+
 define('HTTP_STATUS', [
     'OK'                => 200,
     'CREATED'           => 201,

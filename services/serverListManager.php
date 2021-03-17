@@ -232,6 +232,12 @@ if (isset($request->operation)) {
                         );
                     }
 
+                    if (strlen($validData['description']) > DESCRIPTION_MAX_LENGTH) {
+                        $validData['description'] = substr($validData['description'], 0, DESCRIPTION_MAX_LENGTH);
+
+                        $result['notice'] = 'The description provided was too long, truncated to ' . DESCRIPTION_MAX_LENGTH . ' characters.';
+                    }
+
                     $statement->bindValue('description' , $validData['description']);
                     $statement->bindValue('hostname'    , $validData['hostname']);
                     $statement->bindValue('ip'          , $validData['ipAddress']);

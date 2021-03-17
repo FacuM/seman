@@ -79,7 +79,7 @@ require_once 'views/header.php';
                 <form>
                     <div class="form-group">
                         <label for="serverDescription" class="col-form-label"> Description </label>
-                        <textarea class="form-control" id="serverDescription"></textarea>
+                        <textarea class="form-control" id="serverDescription" maxlength="200"></textarea>
                         <div class="invalid-feedback">
                             Please provide a valid description.
                         </div>
