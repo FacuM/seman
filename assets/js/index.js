@@ -434,6 +434,14 @@ $(document).ready(() => {
          </tr>`
     );
 
+    const resetImageData = () => {
+        serverImage.removeClass('is-valid is-invalid');
+
+        serverImageLabel.text(serverImageDefaultLabel);
+
+        serverImageData = null;
+    }
+
     $.ajax({
         xhr: () => {
             let xhr = new window.XMLHttpRequest();
@@ -556,34 +564,48 @@ $(document).ready(() => {
                 file.name = 'Image';
             }
 
-            if (
-                file.type.indexOf('image/jpg') > -1
-                ||
-                file.type.indexOf('image/jpeg') > -1
-                ||
-                file.type.indexOf('image/png') > -1
-                ||
-                file.type.indexOf('image/gif') > -1
-            ) {
-                serverImage.addClass('is-valid').removeClass('is-invalid');
+            if (IMAGE_VALID_MIMES.includes(file.type)) {
+                let img = new Image();
+                let objectURL = window.URL.createObjectURL(file);;
 
-                serverImageLabel.text(file.name);
+                img.src = objectURL;
+                img.onload = function () {
+                    console.log('width:', this.width, 'height:', this.height);
 
-                const reader = new FileReader();
+                    window.URL.revokeObjectURL(objectURL);
 
-                reader.addEventListener('load', (event) => {
-                    let result = event.target.result;
+                    if (
+                        this.width == IMAGE_REQUIRED_RESOLUTION.WIDTH
+                        &&
+                        this.height == IMAGE_REQUIRED_RESOLUTION.HEIGHT
+                    ) {
+                        serverImage.addClass('is-valid').removeClass('is-invalid');
 
-                    serverImageData = result.split(',')[1];
-                });
+                        serverImageLabel.text(file.name);
 
-                reader.readAsDataURL(file);
+                        const reader = new FileReader();
+
+                        reader.addEventListener('load', (event) => {
+                            let result = event.target.result;
+
+                            serverImageData = result.split(',')[1];
+                        });
+
+                        reader.readAsDataURL(file);
+                    } else {
+                        resetImageData();
+
+                        createToast(
+                            'invalidImageToast',
+                            'Invalid image',
+                            `The file you selected doesn't appear to be a valid image. <br>
+                             <br>
+                             Please verify that its resolution matches exactly 300x300 px (yours was ` + this.width + 'x' + this.height + `px).`
+                        );
+                    }
+                }
             } else {
-                serverImage.removeClass('is-valid is-invalid');
-
-                serverImageLabel.text(serverImageDefaultLabel);
-
-                serverImageData = null;
+                resetImageData();
 
                 createToast('invalidImageToast', 'Invalid image', 'The file you selected doesn\'t appear to be a valid image. Please make sure that it\'s either a jpg, jpeg, gif or png file, its size must be 300x300 px.');
             }

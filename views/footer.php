@@ -8,8 +8,10 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script>
-            const HTTP_STATUS       = <?= json_encode(HTTP_STATUS);         ?>;
-            const IMAGE_UPLOAD_PATH = <?= json_encode(IMAGE_UPLOAD_PATH);   ?>;
+            const HTTP_STATUS               = <?= json_encode(HTTP_STATUS);                 ?>;
+            const IMAGE_UPLOAD_PATH         = <?= json_encode(IMAGE_UPLOAD_PATH);           ?>;
+            const IMAGE_VALID_MIMES         = <?= json_encode(IMAGE_VALID_MIMES);           ?>;
+            const IMAGE_REQUIRED_RESOLUTION = <?= json_encode(IMAGE_REQUIRED_RESOLUTION);   ?>;
         </script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>

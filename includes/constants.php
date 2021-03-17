@@ -29,6 +29,11 @@ define('IMAGE_VALID_MIMES', [
     'image/png'
 ]);
 
+define('IMAGE_REQUIRED_RESOLUTION', [
+    'WIDTH'     => 300,
+    'HEIGHT'    => 300
+]);
+
 define('HTTP_STATUS', [
     'OK'                => 200,
     'CREATED'           => 201,

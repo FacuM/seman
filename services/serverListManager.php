@@ -173,14 +173,22 @@ if (isset($request->operation)) {
                         if ($imageResource === false) {
                             $errors['image'] = 'The provided image is either corrupt or unsupported.';
                         } else {
-                            // unique ID + _ + . + extension (image/jpg => jpg)
-                            $imageFilename = uniqid() . '_' . sha1($imageBinary) . '.' . explode('/', $mime)[1];
+                            $isImageValid = (
+                                imagesx($imageResource) == IMAGE_REQUIRED_RESOLUTION['WIDTH']
+                                &&
+                                imagesy($imageResource) == IMAGE_REQUIRED_RESOLUTION['HEIGHT']
+                            );
 
-                            if (!file_exists(IMAGE_UPLOAD_PATH)) {
-                                mkdir(IMAGE_UPLOAD_PATH, 0777, true);
+                            if ($isImageValid) {
+                                // unique ID + _ + . + extension (image/jpg => jpg)
+                                $imageFilename = uniqid() . '_' . sha1($imageBinary) . '.' . explode('/', $mime)[1];
+
+                                if (!file_exists(IMAGE_UPLOAD_PATH)) {
+                                    mkdir(IMAGE_UPLOAD_PATH, 0777, true);
+                                }
+
+                                file_put_contents(IMAGE_UPLOAD_PATH . '/' . $imageFilename, $imageBinary);
                             }
-
-                            file_put_contents(IMAGE_UPLOAD_PATH . '/' . $imageFilename, $imageBinary);
                         }
                     }
                 }
@@ -188,7 +196,7 @@ if (isset($request->operation)) {
                 $changes = -1;
 
                 if ($values['edit'] == null && !$isImageValid) {
-                    $errors['image'] = 'The provided image isn\'t valid and you must provide one.';
+                    $errors['image'] = 'The provided image isn\'t valid and you must supply a valid one.';
                 } else {
                     if ($values['edit'] == null) {
                         $statement = $database->prepare(
@@ -258,7 +266,9 @@ if (isset($request->operation)) {
 
                 $finalServer = getServer($result['id']);
 
-                $result['image'] = $finalServer['image'];
+                if ($finalServer != null) {
+                    $result['image'] = $finalServer['image'];
+                }
 
                 reply([
                     'result'    => $result,
